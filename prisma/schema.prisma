@@ -7,8 +7,44 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+model Driver {
+  driver_id Int      @id @default(autoincrement())
+  name      String
+  document  String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deleted   Boolean  @default(false) @map("is_deleted")
+  Rental    Rental[]
+
+  @@map("tb_driver")
+}
+
+model Vehicle {
+  vehicle_id Int      @id @default(autoincrement())
+  plate      String
+  color      String
+  brand      String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  deleted    Boolean  @default(false) @map("is_deleted")
+  Rental     Rental[]
+
+  @@map("tb_vehicle")
+}
+
+model Rental {
+  rental_id   Int      @id @default(autoincrement())
+  startDate   DateTime
+  endDate     DateTime
+  usageReason String
+  driver      Driver   @relation(fields: [driverId], references: [driver_id])
+  vehicle     Vehicle  @relation(fields: [vehicleId], references: [vehicle_id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deleted     Boolean  @default(false) @map("is_deleted")
+  driverId    Int
+  vehicleId   Int
+
+  @@unique([driverId, vehicleId], name: "unique_driver_vehicle")
+  @@map("tb_rental")
 }
