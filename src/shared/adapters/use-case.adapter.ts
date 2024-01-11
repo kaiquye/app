@@ -1,3 +1,3 @@
 export abstract class UseCase<Input, Output> {
-  abstract execute(data: Input): Promise<Output>;
+  abstract execute(input: Input): Promise<Output>;
 }

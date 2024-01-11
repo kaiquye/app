@@ -1,5 +1,3 @@
-import { AppError } from 'app.error';
-
 export class APIResponse<T> {
   readonly error: {
     message: string | string[];
@@ -8,22 +6,20 @@ export class APIResponse<T> {
   readonly status: number;
   readonly data?: T;
 
-  private constructor(
-    status: number,
-    flag: string,
-    message: string,
-    data: T = null,
-  ) {
-    if (status > 300 && status !== 204 && data !== null) {
-      throw new AppError('Invalid object http error');
+  private constructor(status: number, flag: string, message: string, data?: T) {
+    this.status = status;
+
+    if (status <= 300) {
+      this.data = data;
     }
 
-    this.status = status;
-    this.data = data;
-    this.error = {
-      message: message,
-      flag: flag,
-    };
+    if (status >= 400) {
+      this.error = {
+        message: message,
+        flag: flag,
+      };
+    }
+
     Object.freeze(this);
   }
 
@@ -35,7 +31,7 @@ export class APIResponse<T> {
     return new APIResponse<T>(201, null, null, data);
   }
 
-  static noContent(flag: string) {
+  static noContent(flag: string = 'not-content') {
     throw new APIResponse<null>(204, flag, null);
   }
 
