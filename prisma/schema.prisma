@@ -33,15 +33,15 @@ model Vehicle {
 }
 
 model Rental {
-  rental_id   Int      @id @default(autoincrement())
+  rental_id   Int       @id @default(autoincrement())
   startDate   DateTime
-  endDate     DateTime
+  endDate     DateTime?
   usageReason String
-  driver      Driver   @relation(fields: [driverId], references: [driver_id])
-  vehicle     Vehicle  @relation(fields: [vehicleId], references: [vehicle_id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  deleted     Boolean  @default(false) @map("is_deleted")
+  driver      Driver    @relation(fields: [driverId], references: [driver_id])
+  vehicle     Vehicle   @relation(fields: [vehicleId], references: [vehicle_id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deleted     Boolean   @default(false) @map("is_deleted")
   driverId    Int
   vehicleId   Int
 

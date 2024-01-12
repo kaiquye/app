@@ -55,8 +55,8 @@ export class DriverRepo implements IDriverRepo {
     });
   }
 
-  findAll(filter: IFindALlFilter): Promise<Driver[]> {
-    const drivers = this.prisma.driver.findMany({
+  async findAll(filter: IFindALlFilter): Promise<Driver[]> {
+    const drivers = await this.prisma.driver.findMany({
       where: {
         name: filter.name,
         deleted: false,
