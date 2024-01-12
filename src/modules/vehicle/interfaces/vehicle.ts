@@ -1,5 +1,5 @@
 export interface Vehicle {
-  vehicle_id?: string;
+  vehicle_id?: number;
   plate: string;
   color: string;
   brand: string;

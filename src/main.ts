@@ -4,9 +4,13 @@ import { ValidationPipe } from '@nestjs/common';
 import { InternalServerErrorFIlter } from './infrastructure/express/filters/internal-server-error.filter';
 import { BadRequestErrorFilter } from './infrastructure/express/filters/bad-request-error.filter';
 import { CustomErrorFilter } from './infrastructure/express/filters/custom-error.error.filter';
+// import * as swagger from 'swagger-ui-express';
+// import swaggerDocument from '../docs/swagger.json';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // app.use('/api/docs', swagger.serve, swagger.setup(swaggerDocument));
 
   app.useGlobalPipes(
     new ValidationPipe({

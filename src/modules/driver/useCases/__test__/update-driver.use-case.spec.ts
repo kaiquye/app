@@ -66,24 +66,4 @@ describe('[UPDATE-DRIVER] USE-CASE', () => {
       expect(error.status).toEqual(404);
     }
   });
-
-  it('should return name is already in use', async () => {
-    jest.spyOn(driverRepo, 'exists').mockResolvedValueOnce({ name: 'kaique' });
-
-    try {
-      const input = {
-        driver_id: 1,
-        name: 'kaique',
-      };
-
-      const output = await useCase.execute(input);
-
-      expect(output.data.name).toBeDefined();
-      fail('Expected an exception to be thrown, but none was thrown.');
-    } catch (error) {
-      expect(error.error.flag).toEqual('DRIVER::NAME-ALREADY-USING ');
-      expect(error.error.message).toEqual('Name is already in use');
-      expect(error.status).toEqual(409);
-    }
-  });
 });

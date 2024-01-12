@@ -25,14 +25,6 @@ export class UpdateDriverUseCase implements IUpdateDriverUseCase {
       throw APIResponse.notFound('driver not found', EDriver.A404);
     }
 
-    if (driverFound.name === input.name) {
-      throw APIResponse.conflict('Name is already in use', EDriver.B409);
-    }
-
-    if (driverFound?.document === input?.document) {
-      throw APIResponse.conflict('Document is already in use', EDriver.C409);
-    }
-
     const updated = await this.driverRepo.update(driver_id, driver);
     return APIResponse.ok(updated);
   }
