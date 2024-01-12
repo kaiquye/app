@@ -7,5 +7,5 @@ export type ICreateVehicleInput = {
 };
 
 export type ICreateVehicleOutput = APIResponse<{
-  vehicle_id: string;
+  vehicle_id: number;
 }>;

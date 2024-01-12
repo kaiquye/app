@@ -1,37 +1,42 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { IVehicleRepo } from '../../repository/vehicle.repository';
-import { CreateVehicleUseCase, ICreateVehicleUseCase } from '../create-vehicle.use-case';
+import { CreateVehicleUseCase } from '../create-vehicle.use-case';
 import { PrismaService } from '@app/infrastructure/prisma/prisma.config';
+import { IUpdateVehicleUseCase, UpdateVehicleUseCase } from '../update-vehicle.use-case';
 
-describe('[CREATE - VEHICLE] USE CASE', () => {
-  let useCase: ICreateVehicleUseCase;
+describe('[UPDATE - VEHICLE] USE CASE', () => {
+  let useCase: IUpdateVehicleUseCase;
   let vehicleRepo: IVehicleRepo;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PrismaService,
-        CreateVehicleUseCase,
+        UpdateVehicleUseCase,
         {
           provide: 'vehicle-repository',
           useFactory: () => ({
             exists: jest.fn().mockResolvedValue(false),
-            save: jest.fn().mockResolvedValue({ vehicle_id: 'uuid' }),
+            update: jest.fn().mockResolvedValue({ vehicle_id: 1 }),
           }),
         },
       ],
     }).compile();
 
-    useCase = module.get<ICreateVehicleUseCase>(CreateVehicleUseCase);
+    useCase = module.get<IUpdateVehicleUseCase>(UpdateVehicleUseCase);
     vehicleRepo = module.get<IVehicleRepo>('vehicle-repository');
   });
 
   it('should defined', () => {
     expect(useCase).toBeDefined();
+    expect(vehicleRepo).toBeDefined();
   });
 
-  it('should create a new vehicle', async () => {
+  it('should update a vehicle by id', async () => {
+    jest.spyOn(vehicleRepo, 'exists').mockResolvedValueOnce({ vehicle_id: 1 });
+
     const input = {
+      vehicle_id: 1,
       plate: 'AAA-3434',
       color: 'blue mica',
       brand: 'subaru',
@@ -40,12 +45,13 @@ describe('[CREATE - VEHICLE] USE CASE', () => {
     const output = await useCase.execute(input);
 
     expect(output.data.vehicle_id).toBeDefined();
+    expect(output.data.vehicle_id).toEqual(1);
   });
 
-  it('should a vehicle with this license plate is already in use.', async () => {
+  it('should return not found vehicle', async () => {
     try {
-      jest.spyOn(vehicleRepo, 'exists').mockResolvedValueOnce({ vehicle_id: 1 });
       const input = {
+        vehicle_id: 0,
         plate: 'AAA-3434',
         color: 'blue mica',
         brand: 'subaru',
@@ -53,11 +59,9 @@ describe('[CREATE - VEHICLE] USE CASE', () => {
       await useCase.execute(input);
       fail('Expected an exception to be thrown, but none was thrown.');
     } catch (error) {
-      expect(error.error.flag).toEqual('VEHICLE::ALREADY-EXISTS');
-      expect(error.error.message).toEqual(
-        'A vehicle with this license plate is already in use.',
-      );
-      expect(error.status).toEqual(409);
+      expect(error.error.flag).toEqual('VEHICLE::NOT-FOUND');
+      expect(error.error.message).toEqual('vehicle not found');
+      expect(error.status).toEqual(404);
     }
   });
 });
