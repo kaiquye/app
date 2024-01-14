@@ -17,7 +17,10 @@ import { IFindVehicleUseCase } from '@app/modules/vehicle/useCases/find-vehicle.
 import { IRemoveVehicleUseCase } from '@app/modules/vehicle/useCases/remove-vehicle.use-case';
 import { IUpdateVehicleUseCase } from '@app/modules/vehicle/useCases/update-vehicle.use-case';
 import { UpdateVehicleDto } from './dtos/update-vehicle.dto';
+import { ESwaggerTAG } from '@app/@config/swagger.config';
+import { ApiParam, ApiTags } from '@nestjs/swagger';
 
+@ApiTags(ESwaggerTAG.VEHICLE)
 @Controller('/vehicle')
 export class VehicleController {
   constructor(
@@ -38,18 +41,21 @@ export class VehicleController {
     return this.createVehicleUseCase.execute(body);
   }
 
+  @ApiParam({ name: 'id', description: 'ID of the vehicle', type: 'integer' })
   @Get('/:vehicle_id')
   async findById(@Param() params: { vehicle_id: string }) {
     const { vehicle_id } = params;
     return this.findVehicleUseCase.execute({ vehicle_id: Number(vehicle_id) });
   }
 
+  @ApiParam({ name: 'id', description: 'ID of the vehicle', type: 'integer' })
   @Delete('/:vehicle_id')
   async remove(@Param() params: { vehicle_id: string }) {
     const { vehicle_id } = params;
     return this.removeVehicleUseCase.execute({ vehicle_id: Number(vehicle_id) });
   }
 
+  @ApiParam({ name: 'id', description: 'ID of the vehicle', type: 'integer' })
   @Patch('/:vehicle_id')
   async update(@Param() params: { vehicle_id: string }, @Body() body: UpdateVehicleDto) {
     const { vehicle_id } = params;

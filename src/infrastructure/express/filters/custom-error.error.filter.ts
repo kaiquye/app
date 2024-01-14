@@ -21,6 +21,6 @@ export class CustomErrorFilter implements ExceptionFilter {
       status: exception.status,
     };
 
-    httpAdapter.reply(ctx.getResponse(), responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
+    httpAdapter.reply(ctx.getResponse(), responseBody, exception.status);
   }
 }

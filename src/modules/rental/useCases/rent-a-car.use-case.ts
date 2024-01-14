@@ -12,6 +12,7 @@ import { EVehicle } from '@app/modules/vehicle/flags/vehicle';
 import { EDriver } from '@app/modules/driver/flags/driver.flags';
 
 export type IRentACarUseCase = UseCase<IRentACarInput, IRentACarOutput>;
+export const RentACarUseCaseProviderName = 'rent-a-car-use-case';
 
 @Injectable()
 export class RentACarUseCase implements IRentACarUseCase {

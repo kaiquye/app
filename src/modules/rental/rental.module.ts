@@ -8,11 +8,21 @@ import { CreateVehicleUseCase } from '../vehicle/useCases/create-vehicle.use-cas
 import { FindVehicleUseCase } from '../vehicle/useCases/find-vehicle.use-case';
 import { FindDriverUseCase } from '../driver/useCases/find-driver.use-case';
 import { RentalController } from '@app/infrastructure/express/controllers/rental/rental.controller';
+import { CancelRentUseCase } from './useCases/cancel-rent.use-case';
+import { FindALlRentalsUseCase } from './useCases/find-rentals.use-case';
 
 @Module({
   controllers: [RentalController],
   providers: [
     PrismaService,
+    {
+      provide: 'find-rentals-use-case',
+      useClass: FindALlRentalsUseCase,
+    },
+    {
+      provide: 'cancel-rental-use-case',
+      useClass: CancelRentUseCase,
+    },
     {
       provide: 'create-vehicle-use-case',
       useClass: CreateVehicleUseCase,

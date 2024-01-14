@@ -3,6 +3,7 @@ import {
   IRentalRepo,
   IFindRentalInfosById,
   ISaveRentalRepo,
+  IFindAllRentalsRepoOutput,
 } from '../../modules/rental/repository/rental.repository';
 import { PrismaService } from './prisma.config';
 import { Rental } from '@app/modules/rental/interfaces/rental';
@@ -87,5 +88,64 @@ export class RentalRepo implements IRentalRepo {
         brand: rentalDb.vehicle.brand,
       },
     };
+  }
+
+  async exists<T>(key: string, value: T): Promise<boolean> {
+    const rental = await this.prisma.rental.count({
+      where: {
+        [key]: value,
+      },
+    });
+
+    return !!rental;
+  }
+
+  async findAllByDriverId(driverId: number): Promise<IFindAllRentalsRepoOutput> {
+    const rentalsDbList = await this.prisma.rental.findMany({
+      where: {
+        driverId,
+        deleted: false,
+      },
+      include: {
+        driver: true,
+        vehicle: true,
+      },
+    });
+
+    if (!rentalsDbList) {
+      return null;
+    }
+
+    return rentalsDbList.map((rental) => {
+      return {
+        rental_id: rental.rental_id,
+        endDate: rental.endDate,
+        startDate: rental.startDate,
+        usageReason: rental.usageReason,
+        driver: {
+          driver_id: rental.driver.driver_id,
+          name: rental.driver.name,
+        },
+        vehicle: {
+          vehicle_id: rental.vehicle.vehicle_id,
+          brand: rental.vehicle.brand,
+          color: rental.vehicle.color,
+          plate: rental.vehicle.plate,
+        },
+      };
+    }) as IFindAllRentalsRepoOutput;
+  }
+
+  async cancel(rental_id: number, canceledDate: Date): Promise<boolean> {
+    const rental = await this.prisma.rental.update({
+      where: {
+        rental_id,
+      },
+      data: {
+        endDate: canceledDate,
+      },
+    });
+
+    return !!rental;
   }
 }

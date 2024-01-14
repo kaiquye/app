@@ -12,7 +12,6 @@ export type IFindALlFilter = {
     limit: number;
   };
 };
-
 export interface IDriverRepo {
   save(data: Driver): Promise<ISaveResponse>;
   exists<T>(value: T, key: string): Promise<Partial<Driver> | undefined>;

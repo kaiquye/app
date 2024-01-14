@@ -17,7 +17,10 @@ import { IUpdateDriverUseCase } from '@app/modules/driver/useCases/update-driver
 import { IRemoverDriverUseCase } from '@app/modules/driver/useCases/remover-driver.use-case';
 import { IFindDriverUseCase } from '@app/modules/driver/useCases/find-driver.use-case';
 import { IFIndAllDriversUseCase } from '@app/modules/driver/useCases/find-all-drivers.use-case';
+import { ApiParam, ApiTags } from '@nestjs/swagger';
+import { ESwaggerTAG } from '@app/@config/swagger.config';
 
+@ApiTags(ESwaggerTAG.DRIVER)
 @Controller('/driver')
 export class DriverController {
   constructor(
@@ -38,6 +41,7 @@ export class DriverController {
     return this.createDriverUseCase.execute(body);
   }
 
+  @ApiParam({ name: 'driverId', description: 'ID of the driver', type: 'integer' })
   @Patch('/:driver_id')
   async update(@Param() params, @Body() body: UpdateDriverDto) {
     const { driver_id } = params;
@@ -48,6 +52,7 @@ export class DriverController {
     });
   }
 
+  @ApiParam({ name: 'driverId', description: 'ID of the driver', type: 'integer' })
   @Delete('/:driver_id')
   async delete(@Param() params) {
     const { driver_id } = params;
@@ -57,6 +62,7 @@ export class DriverController {
     });
   }
 
+  @ApiParam({ name: 'driverId', description: 'ID of the driver', type: 'integer' })
   @Get('/:driver_id')
   async find(@Param() params) {
     const { driver_id } = params;
